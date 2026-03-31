@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useBoard } from './hooks/useBoard.js'
 import Board from './components/Board.jsx'
 import Starfield from './components/Starfield.jsx'
@@ -24,6 +24,12 @@ function scheduledCount(boardState) {
 
 export default function App() {
   const { boardState, addCard, updateCard, deleteCard, moveCard } = useBoard()
+  const [light, setLight] = useState(() => localStorage.getItem('theme') === 'light')
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', light)
+    localStorage.setItem('theme', light ? 'light' : 'dark')
+  }, [light])
 
   useEffect(() => {
     const root = document.documentElement
@@ -80,6 +86,12 @@ export default function App() {
             <p className="main-header-subtitle">Organize, track, and grow your content</p>
           </div>
           <div className="main-header-actions">
+            <button className="theme-toggle" onClick={() => setLight(v => !v)} title={light ? 'Switch to dark mode' : 'Switch to light mode'}>
+              {light
+                ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              }
+            </button>
             <div className="header-stat">
               <strong>{totalCards(boardState)}</strong> total
             </div>
